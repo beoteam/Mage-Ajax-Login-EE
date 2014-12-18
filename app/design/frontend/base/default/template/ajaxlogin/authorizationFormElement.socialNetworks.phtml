@@ -1,0 +1,12 @@
+<div class="al-socialnets">
+    <ul>
+        <?php foreach ( $this->getNetworks() as $__network ): ?>
+            <?php if ( $this->isProperlyConfigured($__network) ): ?>
+                <li>
+                    <img id="<?php echo $__network->getButtonHtmlId() ?>" class="ThumbnailImage" title="<?php echo $__network->getTitle() ?>" src="<?php echo $this->getThumbnailImageURL($__network->getThumbnailImagePath()) ?>" />
+                    <?php echo $this->getButtonInitializationHtml($__network) ?>
+                </li>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </ul>
+</div>

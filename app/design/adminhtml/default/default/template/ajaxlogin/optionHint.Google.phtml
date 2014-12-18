@@ -1,0 +1,51 @@
+<?php
+/**
+ * aheadWorks Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ *
+ * =================================================================
+ *                 MAGENTO EDITION USAGE NOTICE
+ * =================================================================
+ * This software is designed to work with Magento enterprise edition and
+ * its use on an edition other than specified is prohibited. aheadWorks does not
+ * provide extension support in case of incorrect edition use.
+ * =================================================================
+ *
+ * @category   AW
+ * @package    AW_Ajaxlogin
+ * @version    1.1.3
+ * @copyright  Copyright (c) 2010-2012 aheadWorks Co. (http://www.aheadworks.com)
+ * @license    http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ */
+?><h2>How to create Google project with API service</h2>
+<p>In order to use the Google login feature you need to create your project with <b>Google Cloud Console</b>.</p>
+<p>The first step is to visit the <a target="_blank" href="https://cloud.google.com/console">Google Cloud Console</a>. It is necessary to sign in to your Google account at this moment.</p>
+<center><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/doc') ?>/google-project-1.jpg" /></center>
+<p>Cloud console is new product from Google and it goes as a kind of replacement to APIs Console, it provides almost the same functionality but has more friendly interface and it is pretty simple to operate even for unexperienced user.</p>
+<p>As soon as you're in, you probably see there's no projects created yet. Click <b>+&nbsp;New&nbsp;Project</b> button to add one:</p>
+<center><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/doc') ?>/google-project-2.jpg" /></center>
+<p>Give your project a name and a unique ID:</p>
+<center><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/doc') ?>/google-project-3.png" /></center>
+<p>After you click <b>Create</b> the project takes some time to get created and then the project overview page opens:</p>
+<center><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/doc') ?>/google-project-4.png" /></center>
+<p>The next step is to navigate to <b>APIs&nbsp;&amp;&nbsp;auth</b> &rarr; <b>Credentials</b> section of your project details and click <b>Create&nbsp;New&nbsp;Client&nbsp;ID</b> button:</p>
+<center><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/doc') ?>/google-project-5.png" /></center>
+<p>Select <b>Web Application</b> as the type, and give it a relative name; here, you should also specify the <strong>Authorized redirect URL</strong> value.</p>
+<center><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/doc') ?>/google-project-6.png" /></center>
+<p>Generally the <b>Redirect&nbsp;URI</b> value goes as the base URL of your Magento store concatenated with the following string: <b>ajaxlogin/oauth/acceptToken/network/google/</b>. For example:</p>
+<p class="Example">
+    <tt><?php echo Mage::getStoreConfig('web/unsecure/base_url') ?>ajaxlogin/oauth/acceptToken/network/google/</tt><br />
+</p>
+<p>But there is a couple of things for you to note:<br />&nbsp;-&nbsp;if you run several stores with different base URLs on your Magento, you may need to specify as many redirect URIs as many stores you have<br />&nbsp;-&nbsp;if you somehow use secure URLs for the entire webstore, you may need to change the URL scheme of your redirect URIs from <b>http</b> to <b>https</b></p>
+<p>After you click <b>Create Client ID</b> a new application is registered within your project. Now, under <strong>Client ID for web application</strong> section, you can see <strong>Client ID</strong> and <strong>Client secret</strong> values.</p>
+<center><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/doc') ?>/google-project-7.png" /></center>
+<p>You should copy these values and paste them into the correspondent inputs in the Google login configuration options.</p>
+<p>Now you're all set and ready to use login with Google account feature.</p>
+<p>As a friendly advice, it is also recommended to visit the <b>APIs&nbsp;&amp;&nbsp;auth</b> &rarr; <b>Consent&nbsp;screen</b> section of the project details. You may want to play around the visual options of your project to make sure it looks beautiful since title and logo appear to your customers when the application requests permissions from them upon login via Google.</p>
+<p>Find more information about authentication with Google in the <a target="_blank" href="https://developers.google.com/accounts/docs/OAuth2Login">official documentation</a>.</p>

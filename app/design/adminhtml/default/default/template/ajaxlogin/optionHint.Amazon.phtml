@@ -1,0 +1,43 @@
+<?php
+/**
+ * aheadWorks Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ *
+ * =================================================================
+ *                 MAGENTO EDITION USAGE NOTICE
+ * =================================================================
+ * This software is designed to work with Magento enterprise edition and
+ * its use on an edition other than specified is prohibited. aheadWorks does not
+ * provide extension support in case of incorrect edition use.
+ * =================================================================
+ *
+ * @category   AW
+ * @package    AW_Ajaxlogin
+ * @version    1.1.3
+ * @copyright  Copyright (c) 2010-2012 aheadWorks Co. (http://www.aheadworks.com)
+ * @license    http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ */
+?><h2>How to create Amazon application</h2>
+<p>In order to use the Amazon login feature you need to create an application within the <b>Amazon App Console</b>.</p>
+<p>The first step is to visit the <a target="_blank" href="http://login.amazon.com/manageApps">Amazon App Console</a>. It is necessary to sign in to your Amazon account at this moment.</p>
+<center><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/doc') ?>/amazon-application-1.png" /></center>
+<p>As soon as you're in, you probably see there's no any applications. Click <b>Register&nbsp;New&nbsp;Application</b> button to add one:</p>
+<center><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/doc') ?>/amazon-application-2.png" /></center>
+<p>Now, please fill the form carefully and click <b>Save</b> button to save the application.</p>
+<center><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/doc') ?>/amazon-application-3.png" /></center>
+<p>Right after the application is created it takes you to the first section of the details page called <b>Application Information</b>. You can always edit it by clicking appropriate button. The next step is to open the next section called <b>Web Settings</b>:</p>
+<center><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/doc') ?>/amazon-application-4.png" /></center>
+<p>The <b>Client ID</b> and the <b>Client Secret</b> values are those that you need to make the Amazon login feature work with your Magento. Just take them from here to the corresponding options in the configuration and that's it.</p>
+<p>The <b>Web Settings</b> section of your Amazon application also has the <b>Allowed Return URLs</b> option which is recommended to specify to make it more secure.</p>
+<p>The <b>Allowed Return URLs</b> value goes as the base URL of your Magento store concatenated with the following string: <b>ajaxlogin/oauth/acceptToken/network/amazon/</b>. For example:</p>
+<p class="Example">
+    <tt><?php echo Mage::getStoreConfig('web/unsecure/base_url') ?>ajaxlogin/oauth/acceptToken/network/amazon/</tt><br />
+</p>
+<p>Congratulations! Now you're all set and ready to use login with Amazon account feature.</p>
+<p>Find more information about authentication with Amazon in the <a target="_blank" href="http://login.amazon.com/website">official documentation</a>.</p>

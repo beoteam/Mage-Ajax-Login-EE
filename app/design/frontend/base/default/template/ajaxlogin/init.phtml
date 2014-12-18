@@ -1,0 +1,54 @@
+<?php foreach ($this->getChildren() as $__childBlock): ?>
+    <?php echo $__childBlock->toHtml() ?>
+<?php endforeach; ?>
+
+
+<div class="alAgreementPopup alPopup" style="display: none;">
+    <div class="Shadow"></div>
+    <div class="Canvas">
+        <div class="Title"><h2></h2></div>
+        <div class="Content"></div>
+        <div class="Toolbar">
+            <div class="buttons-set">
+                <a class="alCloseButton" href=""><?php echo $this->__('Close') ?></a>
+                <button title="Create an Account" class="alAcceptButton button" type="button"><span><span><?php echo $this->__('Accept') ?></span></span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $$('.alAgreementPopup .Shadow')[0].observe(
+        'click',
+        function(event) {
+            var __agreementPopupNode = this.parentNode;
+            __agreementPopupNode.style.display = 'none';
+            
+            return AjaxLogin.cancelPrototypeEvent(event);
+        }
+    );
+    
+    $$('.alAgreementPopup .alCloseButton')[0].observe(
+        'click',
+        function(event) {
+            var __agreementPopupNode = this.parentNode.parentNode.parentNode.parentNode;
+            __agreementPopupNode.style.display = 'none';
+            
+            return AjaxLogin.cancelPrototypeEvent(event);
+        }
+    );
+    
+    $$('.alAgreementPopup .alAcceptButton')[0].observe(
+        'click',
+        function(event) {
+            var __agreementPopupNode = this.parentNode.parentNode.parentNode.parentNode;
+            __agreementPopupNode.style.display = 'none';
+            
+            if ( this.__agreementCheckbox ) {
+                this.__agreementCheckbox.checked = 'checked';
+            }
+            
+            return AjaxLogin.cancelPrototypeEvent(event);
+        }
+    );
+</script>

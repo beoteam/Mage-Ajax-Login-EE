@@ -1,0 +1,29 @@
+<ul class="messages Shaddy" style="display: none;"></ul>
+
+<div class="buttons-set">
+    <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+    <?php if ( $this->shouldDisplayBacktologinbutton() ): ?>
+        <p class="back-link"><a href="<?php echo $this->helper('customer')->getLoginUrl() ?>" id="<?php echo $this->getBacktologinbuttonHtmlId() ?>"><small>&laquo; </small><?php echo $this->__('Back to Login') ?></a></p>
+    <?php endif; ?>
+    <button type="submit" class="button" title="<?php echo $this->__('Submit') ?>"><span><span><?php echo $this->__('Submit') ?></span></span></button>
+</div>
+
+<script type="text/javascript">
+    Event.observe(
+        window,
+        'load',
+        function() {
+            $('<?php echo $this->getBacktologinbuttonHtmlId() ?>').observe(
+                'click',
+                function(event) {
+                    AjaxLogin.Authorization.__getInstanceByChildnode(this).switchToFrame('login');
+                    if (window.event) window.event.cancelBubble = true;
+                    if (window.event) window.event.returnValue = false;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
+            );
+        }
+    );
+</script>

@@ -1,0 +1,86 @@
+<div class="account-login">
+    <div class="page-title">
+        <h1><?php echo $this->__('Login or Create an Account') ?></h1>
+    </div>
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php echo $this->getChildHtml('customer.form.login.extra')?>
+    <div class="col2-set">
+        <div class="col-1 new-users">
+            <div class="content">
+                <h2><?php echo $this->__('New Customers') ?></h2>
+                <p><?php echo $this->__('By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.') ?></p>
+            </div>
+        </div>
+        <div class="col-2 registered-users">
+            <div class="content">
+                <h2><?php echo $this->__('Registered Customers') ?></h2>
+                <p><?php echo $this->__('If you have an account with us, please log in.') ?></p>
+                <?php echo $this->getChildHtml('authorization') ?>
+            </div>
+        </div>
+    </div>
+    <div class="col2-set">
+        <div class="col-1 new-users">
+            <div class="buttons-set">
+                <button type="button" class="button" title="<?php echo $this->__('Create an Account') ?>" id="createaccountbtn"><span><span><?php echo $this->__('Create an Account') ?></span></span></button>
+            </div>
+        </div>
+        <div class="col-2 registered-users">
+            <div class="buttons-set">
+                <a href="" class="f-left" id="forgotpwdbtn"><?php echo $this->__('Forgot Your Password?') ?></a>
+                <button type="button" class="button" title="<?php echo $this->__('Login') ?>" name="send" id="send2"><span><span><?php echo $this->__('Login') ?></span></span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    Event.observe(
+        window,
+        'load',
+        function() {
+            $$('.account-login #send2')[0].observe(
+                'click',
+                function(event) {
+                    var __authorizationNode = $('<?php echo $this->getChild('authorization')->getHtmlId() ?>');
+                    var __authorization = AjaxLogin.Authorization.__getInstanceByChildnode(__authorizationNode);
+                    __authorization.getFrame('login').login();
+                }
+            );
+            $$('.account-login #forgotpwdbtn')[0].observe(
+                'click',
+                function(event) {
+                    var __overlapRootNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getHtmlId() ?>');
+                    __overlapRootNode.style.display = '';
+                    
+                    var __overlapAuthorizationNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getChild('authorization')->getHtmlId() ?>');
+                    var __overlapAuthorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(__overlapAuthorizationNode);
+                    __overlapAuthorizationInstance.switchToFrame('recovery');
+                    
+                    if (window.event) window.event.cancelBubble = true;
+                    if (window.event) window.event.returnValue = false;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
+            );
+            $$('.account-login #createaccountbtn')[0].observe(
+                'click',
+                function(event) {
+                    var __overlapRootNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getHtmlId() ?>');
+                    __overlapRootNode.style.display = '';
+                    
+                    var __overlapAuthorizationNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getChild('authorization')->getHtmlId() ?>');
+                    var __overlapAuthorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(__overlapAuthorizationNode);
+                    __overlapAuthorizationInstance.switchToFrame('register');
+                    
+                    if (window.event) window.event.cancelBubble = true;
+                    if (window.event) window.event.returnValue = false;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
+            );
+        }
+    );
+</script>

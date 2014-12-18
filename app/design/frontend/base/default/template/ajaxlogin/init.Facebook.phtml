@@ -1,0 +1,68 @@
+<?php if ( Mage::getStoreConfig('ajaxlogin/login_with_facebook_account/allowed') ): ?>
+    <div id="fb-root"></div>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init(
+                {
+                    appId      : '<?php echo Mage::getStoreConfig('ajaxlogin/login_with_facebook_account/application_id') ?>',
+                    status     : true,
+                    cookie     : true,
+                    xfbml      : true
+                }
+            );
+        };
+        
+        (
+            function(d) {
+                var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+                if (d.getElementById(id)) {
+                    return;
+                }
+                js = d.createElement('script'); js.id = id; js.async = true;
+                js.src = "//connect.facebook.net/en_US/all.js";
+                ref.parentNode.insertBefore(js, ref);
+            }
+            (document)
+        );
+        
+        
+        __facebookDoAuth = function(accessToken, imageNode) {
+            FB.api(
+                '/me',
+                function(accessToken, imageNode) {
+                    return function(__facebookResponse) {
+                        var __overlapAuthorizationNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getChild('authorization')->getHtmlId() ?>');
+                        var __overlapAuthorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(__overlapAuthorizationNode);
+                        
+                        __overlapAuthorizationInstance.getFrame('extra').login(
+                            { network: 'facebook', accessToken: accessToken },
+                            function(facebookResponse) {
+                                return function(response) {
+                                    if ( typeof response == 'object' ) {
+                                        if ( (typeof response.notRegistered != 'undefined') && (response.notRegistered == 1) ) {
+                                            this.register(
+                                                {
+                                                    network     : 'facebook',
+                                                    accessToken : accessToken,
+                                                    email       : facebookResponse.email,
+                                                    firstname   : facebookResponse.first_name,
+                                                    lastname    : facebookResponse.last_name
+                                                }
+                                            );
+                                        }
+                                        if ( (typeof response.errorMessage == 'string') && (response.errorMessage.length) ) {
+                                            __authorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(imageNode);
+                                            __authorizationInstance.setMessage(response.errorMessage);
+                                        }
+                                    }
+                                };
+                            }
+                            (__facebookResponse)
+                        );
+                    };
+                }
+                (accessToken, imageNode)
+            );
+        };
+    </script>
+<?php endif; ?>

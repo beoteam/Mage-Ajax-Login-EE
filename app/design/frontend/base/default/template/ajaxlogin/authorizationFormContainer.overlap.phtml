@@ -1,0 +1,129 @@
+<div class="alProgressBar alPopup" style="display: none;">
+    <div class="Shadow"></div>
+    <div class="loading-mask">
+        <p class="loader" id="loading_mask_loader"><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/ajax-loader-tr.gif') ?>" alt="Loading..." /><br />Please wait...</p>
+    </div>
+</div>
+
+<div class="al-authorization-container-overlap" id="<?php echo $this->getHtmlId() ?>" style="display: none;">
+    <div class="Shadow"></div>
+    <div class="Canvas">
+        <div class="Shadowed">
+            <div class="Wrapper">
+                <?php echo $this->getChildHtml('authorization') ?>
+            </div>
+            <div class="Close"><a href="" title="<?php echo $this->__('Close window') ?>"><?php echo $this->__('Close') ?>&nbsp;[X]</a></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    Event.observe(
+        window,
+        'load',
+        function() {
+            var __overlapRootNode = $('<?php echo $this->getHtmlId() ?>');
+            var __closeLinkNode = __overlapRootNode.select('.Close a')[0];
+            var __shadowAreaNode = __overlapRootNode.select('.Shadow')[0];
+            var __canvasAreaNode = __overlapRootNode.select('.Canvas')[0];
+            
+            /* Patching authorization instance */
+            var __authorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode($('<?php echo $this->getChild('authorization')->getHtmlId() ?>'));
+            __authorizationInstance.__setProgressBar( $$('.alProgressBar')[0] );
+            __authorizationInstance.__showFrame = function(canvasNode) {
+                return function(frame) {
+                    var __frameIndex = this.__getFrameIndex(frame);
+                    
+                    if ( typeof __frameIndex == 'number' ) {
+                        var __frameRootNode = this.__frames[__frameIndex].rootNode;
+                        __frameRootNode.style.display = '';
+                        
+                        if ( canvasNode ) {
+                            var __frameHeight = __frameRootNode.getDimensions().height;
+                        }
+                    }
+                    
+                    return this;
+                };
+            }
+            (__canvasAreaNode);
+            __authorizationInstance.getFrame('register').registrationFormNode.observe(
+                'submit',
+                function(frame, canvasNode) {
+                    return function(event) {
+                        if ( (frame) && (canvasNode) ) {
+                            var __frameRootNode = frame.rootNode;
+                            var __frameHeight = __frameRootNode.getDimensions().height;
+                        }
+                    };
+                }
+                (__authorizationInstance.getFrame('register'), __canvasAreaNode)
+            );
+            
+            __closeLinkNode.observe(
+                'click',
+                function(overlapRootNode, authorizationInstance) {
+                    return function(event) {
+                        overlapRootNode.style.display = 'none';
+                        authorizationInstance.switchToFrame(0);
+                        
+                        if (window.event) window.event.cancelBubble = true;
+                        if (window.event) window.event.returnValue = false;
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    };
+                }
+                (__overlapRootNode, __authorizationInstance)
+            );
+            
+            __shadowAreaNode.observe(
+                'click',
+                function(overlapRootNode) {
+                    return function(event) {
+                        overlapRootNode.style.display = 'none';
+                    };
+                }
+                (__overlapRootNode)
+            );
+            
+            __canvasAreaNode.observe(
+                'click',
+                function(overlapRootNode) {
+                    return function(event) {
+                        if (event.target == this) {
+                            overlapRootNode.style.display = 'none';
+                        }
+                    };
+                }
+                (__overlapRootNode)
+            );
+            
+            __authorizationInstance.addHandler(
+                AjaxLogin.Authorization.EVENTTYPE_LOGINSUCCESS,
+                function(eventData) {
+                    var __overlapNode = $('<?php echo $this->getHtmlId() ?>');
+                    __overlapNode.style.display = 'none';
+                }
+            );
+            
+            __authorizationInstance.addHandler(
+                AjaxLogin.Authorization.EVENTTYPE_REGISTERSUCCESS,
+                function(eventData) {
+                    if ( (typeof eventData.loggedIn == 'undefined') || (eventData.loggedIn != 0) ) {
+                        var __overlapNode = $('<?php echo $this->getHtmlId() ?>');
+                        __overlapNode.style.display = 'none';
+                    }
+                }
+            );
+            
+            __authorizationInstance.addHandler(
+                AjaxLogin.Authorization.EVENTTYPE_REQUIREDENTRIES,
+                function(eventData) {
+                    var __overlapNode = $('<?php echo $this->getHtmlId() ?>');
+                    __overlapNode.style.display = '';
+                }
+            );
+        }
+    );
+</script>

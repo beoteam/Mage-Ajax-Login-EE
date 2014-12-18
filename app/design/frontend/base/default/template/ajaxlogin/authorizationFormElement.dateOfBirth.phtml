@@ -1,0 +1,6 @@
+<?php $__dob = $this->getLayout()->createBlock('customer/widget_dob')->setTemplate('ajaxlogin/customerWidgetDob.phtml') ?>
+<?php if ($__dob->isEnabled()): ?>
+    <?php $__dob->setDate($this->getParentBlock()->getFormData()->getDob()) ?>
+    <?php $__dob->setFormBlock($this->getParentBlock()->getParentBlock()) ?>
+    <?php echo $__dob->toHtml() ?>
+<?php endif ?>

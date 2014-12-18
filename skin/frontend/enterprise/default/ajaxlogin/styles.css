@@ -1,0 +1,108 @@
+.Shadowed { -moz-box-shadow: 0 0 10px rgba(0,0,0,0.5); -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.5); box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+  .Shaddy { -moz-box-shadow: 0 0  5px rgba(0,0,0,0.5); -webkit-box-shadow: 0 0  5px rgba(0,0,0,0.5); box-shadow: 0 0  5px rgba(0,0,0,0.5); }
+
+/* Authorization container - Overlap */
+.al-authorization-container-overlap { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 100; }
+.al-authorization-container-overlap .Shadow { position: absolute; width: 100%; height: 100%; background-color: black; opacity: 0.5; -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; }
+.al-authorization-container-overlap .Canvas { position: absolute; left: 50%; top: 50%; margin-left: -180px; width: 360px; height: 60%; }
+.al-authorization-container-overlap .Canvas .Wrapper { padding: 12px; background: #FAF7EE; }
+.al-authorization-container-overlap .Close { text-align: right; padding: 12px; position: absolute; width: 100px; right: 0; top: 0; }
+
+.al-authorization-container-overlap .al-authorizationform-register .buttons-set { margin-top: 1em; }
+.al-authorization-container-overlap .form-list INPUT.input-text { width: 330px; }
+
+/* Authorization container - Customer Account Login */
+.account-login .al-authorizationform-login .buttons-set { border: none; background: none; padding: 0; }
+.account-login .al-authorization .al-authorizationform-login    LABEL { width:  98px; }
+.account-login .al-authorization .al-authorizationform-register LABEL { width: 225px; }
+
+/* Authorization container - Checkout Onepage Index */
+#checkout-step-login .al-authorization .messages { height: auto; bottom: auto; top: -165px; }
+#checkout-step-login P.loader { padding: 15px 30px; margin: 0 0 0 -105px; }
+
+/* Authorization form */
+.al-authorization { position: relative; }
+.al-authorization .messages {  }
+.al-authorization .messages LI { margin-bottom: 0 !important; padding: 4px; }
+.al-authorization .Window { overflow: hidden; }
+.al-authorization .Frame H2 { width: 270px; }
+.al-authorization .form-list LABEL { width: auto; }
+.al-authorization .checkout-agreements .agree { padding: 0; }
+.al-authorization .checkout-agreements .agree label em{position: static; float: none;}
+.al-authorization .checkout-agreements LI { margin: 0; }
+.al-authorization .agreement-content { position: absolute; width: 100%; height: auto; left: 105%; }
+
+/* Authorization form shape - Login */
+.al-authorizationform-login {  }
+
+/* Authorization form shape - Register */
+.al-authorizationform-register {  }
+.al-authorizationform-register .form-list SELECT { width: 300px; }
+.al-authorizationform-register LABEL { float: none; }
+.al-authorizationform-register LABEL.an-data { float: left; }
+
+/* Authorization form shape - Recovery */
+.al-authorizationform-recovery {  }
+.al-authorizationform-recovery .TextMessage { padding: 0; }
+
+/* Authorization form shape - Extra */
+.al-authorizationform-extra {  }
+.al-authorizationform-extra LABEL { float: none; }
+.al-authorizationform-extra .form-list SELECT { width: 300px; }
+
+/* Authorization form elements */
+.al-socialnets { text-align: center; padding: 8px 0; }
+.al-socialnets UL { display: inline-block; }
+.al-socialnets UL LI { float: left; margin-right: 8px; }
+.al-socialnets .ThumbnailImage { cursor: pointer; }
+
+/* Progress bar */
+.alPopup { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 200; }
+.alPopup .Shadow { position: absolute; width: 100%; height: 100%; background-color: black; opacity: 0.1; -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=10)"; filter: alpha(opacity=10); }
+.alPopup .loading-mask { background: url('blank.gif') repeat; position: absolute; color: #d85909; font-size: 1.1em; font-weight: bold; text-align: center; opacity: 0.80; -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"; }
+.alPopup .loading-mask .loader { position:fixed; top:45%; left:50%; width:150px; margin-left:-105px; padding:15px 30px; background:#fff4e9; border:2px solid #f1af73; color:#d85909; font-weight:bold; text-align:center; }
+
+/* Agreement popup */
+.alAgreementPopup .Canvas { position: absolute; left: 50%; top: 50%; margin-left: -400px; margin-top: -300px; width: 800px; height: 600px; background: #FAF7EE; }
+.alAgreementPopup .Content, .alAgreementPopup .Title { padding: 12px; }
+.alAgreementPopup .Content { overflow: auto; height: 470px; }
+.alAgreementPopup .Toolbar { bottom: 0; padding-bottom: 2px; position: absolute; width: 100%; }
+.alAgreementPopup .buttons-set { text-align: center; margin: 0;}
+.alAgreementPopup .buttons-set .button { float: none; }
+
+/* Date of birth form field styles */
+.form-list .ajaxlogin-customer-dob label { float:none; width:auto; padding:0; font-size:11px; font-weight:normal; color:#777; }
+.form-list .ajaxlogin-customer-dob .input-box { float:left; width:auto; margin-right:8px; }
+.form-list .ajaxlogin-customer-dob .input-box .validation-advice { display:none !important; }
+.form-list .ajaxlogin-customer-dob input.input-text { float:none; display:block; margin-bottom:2px; }
+.form-list .ajaxlogin-customer-dob .dob-day,
+.form-list .ajaxlogin-customer-dob .dob-month,
+.form-list .ajaxlogin-customer-dob .dob-year { float:left; margin-right:8px; padding-right:0 !important; background:none !important; }
+.form-list .ajaxlogin-customer-dob .dob-day .validation-advice,
+.form-list .ajaxlogin-customer-dob .dob-month .validation-advice,
+.form-list .ajaxlogin-customer-dob .dob-year .validation-advice { display:none; }
+.form-list .ajaxlogin-customer-dob .dob-day input.input-text { width: 80px; }
+.form-list .ajaxlogin-customer-dob .dob-month input.input-text { width: 80px; }
+.form-list .ajaxlogin-customer-dob .dob-year { margin-right:0; }
+.form-list .ajaxlogin-customer-dob .dob-year input.input-text { width:115px; }
+
+.form-list .ajaxlogin-customer-dob-extra label { float:none; width:auto; padding:0; font-size:11px; font-weight:normal; color:#777; }
+.form-list .ajaxlogin-customer-dob-extra .input-box { float:left; width:auto; margin-right:8px; }
+.form-list .ajaxlogin-customer-dob-extra .input-box .validation-advice { display:none !important; }
+.form-list .ajaxlogin-customer-dob-extra input.input-text { float:none; display:block; margin-bottom:2px; }
+.form-list .ajaxlogin-customer-dob-extra .dob-day,
+.form-list .ajaxlogin-customer-dob-extra .dob-month,
+.form-list .ajaxlogin-customer-dob-extra .dob-year { float:left; margin-right:8px; padding-right:0 !important; background:none !important; }
+.form-list .ajaxlogin-customer-dob-extra .dob-day .validation-advice,
+.form-list .ajaxlogin-customer-dob-extra .dob-month .validation-advice,
+.form-list .ajaxlogin-customer-dob-extra .dob-year .validation-advice { display:none; }
+.form-list .ajaxlogin-customer-dob-extra .dob-day input.input-text { width: 80px; }
+.form-list .ajaxlogin-customer-dob-extra .dob-month input.input-text { width: 80px; }
+.form-list .ajaxlogin-customer-dob-extra .dob-year { margin-right:0; }
+.form-list .ajaxlogin-customer-dob-extra .dob-year input.input-text { width: 115px; }
+
+/* CAPTCHA */
+.al-authorization .captcha-image {
+    margin: 0;
+    width: auto;
+}

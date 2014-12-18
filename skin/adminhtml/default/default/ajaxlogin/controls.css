@@ -1,0 +1,12 @@
+.SelectableText_Input { margin-top: 10pt; }
+
+.al-optionHintPopup { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 200; }
+.al-optionHintPopup .Shadow { position: absolute; width: 100%; height: 100%; background-color: black; opacity: 0.5; }
+.al-optionHintPopup .Window { position: absolute; left: 50%; top: 50%; margin-left: -480px; margin-top: -350px; width: 960px; height: 700px; border: 1px solid #555; background: #FAFAFA; }
+.al-optionHintPopup .Title { background: #6A838B url('../lib/prototype/windows/themes/magento/top_bg.gif') 0 100% repeat-x; border-bottom: 1px solid #E6E6E6; height: 28px; line-height: 28px; padding: 0px 6px; font: bold 12px/28px Arial, Helvetica, sans-serif; color: white; }
+.al-optionHintPopup .Content { background: url('../lib/prototype/windows/themes/magento/content_bg.gif') 0 0 repeat-x; padding: 16px 20px; height: 592px; overflow: auto; }
+.al-optionHintPopup .Content IMG { text-align: center; -moz-box-shadow: 0 0 10px rgba(0,0,0,0.5); -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.5); box-shadow: 0 0 10px rgba(0,0,0,0.5); margin: 12px 0; }
+.al-optionHintPopup .Content P { text-indent: 2em; }
+.al-optionHintPopup .Content P.Example { padding: 24px; background: #E7EFEF; border: 1px dotted #CDDDDD; font-style: italic;  }
+.al-optionHintPopup .Toolbar { padding: 8px 20px 20px 20px; text-align: right; }
+.al-optionHintPopup .Toolbar .save span { background-repeat: no-repeat; }

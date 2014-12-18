@@ -1,0 +1,249 @@
+<?php
+/**
+ * aheadWorks Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ *
+ * =================================================================
+ *                 MAGENTO EDITION USAGE NOTICE
+ * =================================================================
+ * This software is designed to work with Magento enterprise edition and
+ * its use on an edition other than specified is prohibited. aheadWorks does not
+ * provide extension support in case of incorrect edition use.
+ * =================================================================
+ *
+ * @category   AW
+ * @package    AW_Ajaxlogin
+ * @version    1.1.3
+ * @copyright  Copyright (c) 2010-2012 aheadWorks Co. (http://www.aheadworks.com)
+ * @license    http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ */
+?><?php echo $this->getChildHtml('login_before')?>
+<?php echo $this->getChildHtml('checkout.onepage.login.extra')?>
+<div class="col2-set<?php if (!$this->helper('customer')->isRegistrationAllowed() && !$this->getQuote()->isAllowedGuestCheckout()) echo ' login-only' ?>">
+    <div class="col-1">
+        <h4><?php echo $this->__('Login') ?></h4>
+        <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+        <fieldset>
+            <p><?php echo $this->__('Already registered?') ?> <?php echo $this->__('Please log in below:') ?></p>
+            <ul class="form-list">
+                <?php echo $this->getChildHtml('authorization') ?>
+                <?php echo $this->getChildHtml('form.additional.info'); ?>
+                <li class="note">
+                    <a href="<?php echo $this->getUrl('customer/account/forgotpassword') ?>"><?php echo $this->__('Forgot your password?') ?></a>
+                </li>
+                <li class="buttons-set">
+                    <button type="button" class="button"><span><span><?php echo $this->__('Login') ?></span></span></button>
+                </li>
+            </ul>
+        </fieldset>
+    </div>
+    <?php if ( $this->getQuote()->isAllowedGuestCheckout() || $this->helper('customer')->isRegistrationAllowed() ): ?>
+        <div class="col-2">
+            <h4>
+                <?php if ( $this->getQuote()->isAllowedGuestCheckout() && $this->helper('customer')->isRegistrationAllowed() ): ?>
+                    <?php echo $this->__('Checkout as a Guest or Register') ?>
+                <?php elseif ( $this->getQuote()->isAllowedGuestCheckout() && !$this->helper('customer')->isRegistrationAllowed() ): ?>
+                    <?php echo $this->__('Checkout as a Guest') ?>
+                <?php else: ?>
+                    <?php echo $this->__('Register to Create an Account') ?>
+                <?php endif; ?>
+            </h4>
+            <?php if ( !$this->getQuote()->isAllowedGuestCheckout() && $this->helper('customer')->isRegistrationAllowed() ): ?>
+                <p><strong><?php echo $this->__('Register and save time!') ?></strong><br />
+                <?php echo $this->__('Register with us for future convenience:') ?></p>
+                <ul>
+                    <li><?php echo $this->__('Fast and easy check out') ?></li>
+                    <li><?php echo $this->__('Easy access to your order history and status') ?></li>
+                </ul>
+            <?php elseif ( $this->getQuote()->isAllowedGuestCheckout() && $this->helper('customer')->isRegistrationAllowed() ): ?>
+                <p><?php echo $this->__('Register with us for future convenience:') ?></p>
+            <?php endif ?>
+            <?php if ( $this->getQuote()->isAllowedGuestCheckout() ): ?>
+                <ul class="form-list form-alt">
+                    <?php if ( $this->getQuote()->isAllowedGuestCheckout() ): ?>
+                        <li>
+                            <input type="radio" name="checkout_method" id="login:guest" value="guest"<?php if($this->getQuote()->getCheckoutMethod()==Mage_Checkout_Model_Type_Onepage::METHOD_GUEST): ?> checked="checked"<?php endif; ?> class="radio" />
+                            <label for="login:guest"><?php echo $this->__('Checkout as Guest') ?></label>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ( $this->helper('customer')->isRegistrationAllowed() ): ?>
+                        <li>
+                            <input type="radio" name="checkout_method" id="login:register" value="register"<?php if($this->getQuote()->getCheckoutMethod()==Mage_Checkout_Model_Type_Onepage::METHOD_REGISTER || !$this->getQuote()->isAllowedGuestCheckout()): ?> checked="checked"<?php endif ?> class="radio" />
+                            <label for="login:register"><?php echo $this->__('Register') ?></label>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            <?php else: ?>
+                <input type="hidden" name="checkout_method" id="login:register" value="register" checked="checked" />
+            <?php endif; ?>
+            <div class="buttons-set">
+                <button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue') : $this->__('Register')) ?></span></span></button>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+
+<script type="text/javascript">
+    Event.observe(
+        window,
+        'load',
+        function() {
+            $$('#checkout-step-login .col2-set .col-1 .buttons-set button')[0].observe(
+                'click',
+                function(event) {
+                    var __authorizationNode = $('<?php echo $this->getChild('authorization')->getHtmlId() ?>');
+                    var __authorization = AjaxLogin.Authorization.__getInstanceByChildnode(__authorizationNode);
+                    __authorization.getFrame('login').login();
+                    
+                    if (window.event) window.event.cancelBubble = true;
+                    if (window.event) window.event.returnValue = false;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
+            );
+            $('login:register').observe(
+                'click',
+                function(event) {
+                    var __overlapRootNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getHtmlId() ?>');
+                    __overlapRootNode.style.display = '';
+                    
+                    var __overlapAuthorizationNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getChild('authorization')->getHtmlId() ?>');
+                    var __overlapAuthorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(__overlapAuthorizationNode);
+                    __overlapAuthorizationInstance.switchToFrame('register');
+                    
+                    if (window.event) window.event.cancelBubble = true;
+                    if (window.event) window.event.returnValue = false;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
+            );
+            $$('#checkout-step-login .col2-set .col-1 a')[0].observe(
+                'click',
+                function(event) {
+                    var __overlapRootNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getHtmlId() ?>');
+                    __overlapRootNode.style.display = '';
+                    
+                    var __overlapAuthorizationNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getChild('authorization')->getHtmlId() ?>');
+                    var __overlapAuthorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(__overlapAuthorizationNode);
+                    __overlapAuthorizationInstance.switchToFrame('recovery');
+                    
+                    if (window.event) window.event.cancelBubble = true;
+                    if (window.event) window.event.returnValue = false;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
+            );
+            
+            var __overlapAuthorizationNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getChild('authorization')->getHtmlId() ?>');
+            var __overlapAuthorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(__overlapAuthorizationNode);
+            
+            __overlapAuthorizationInstance.getFrame('login').forceUpdating();
+            __overlapAuthorizationInstance.getFrame('extra').forceUpdating();
+            
+            __successLoginHandlerAtCheckout = function(eventData) {
+                /*
+                if ( typeof accordion != 'undefined' ) {
+                    var __billingSection = $('opc-billing');
+                    if ( typeof __billingSection != 'undefined' ) {
+                        var __passwordsNode = __billingSection.select('#register-customer-password')[0];
+                        __passwordsNode.parentNode.removeChild(__passwordsNode);
+                        
+                        var __customerInformation = eventData.customer_information;
+                        if ( typeof __customerInformation.street == 'string' ) {
+                            var __streetParts = __customerInformation.street.split("\n");
+                            __customerInformation.street1 = __streetParts[0];
+                            __customerInformation.street2 = __streetParts[1];
+                        }
+                        if ( typeof __customerInformation != 'undefined' ) {
+                            var __elements = __billingSection.select('input').concat( __billingSection.select('select') );
+                            if ( __elements.length ) {
+                                for ( var __index = 0; __index < __elements.length; __index++ ) {
+                                    var __elementNode = __elements[__index];
+                                    
+                                    if ( __elementNode ) {
+                                        var __elementName = __elementNode.name;
+                                        if ( !__elementName ) continue;
+                                        
+                                        var __elementID = __elementNode.id;
+                                        
+                                        var __matches = __elementID.match(/^billing\:(\w+[\w\d]*)$/);
+                                        if ( (!__matches) || (__matches.length < 2) ) continue;
+                                        
+                                        var __informationKey = __matches[1];
+                                        if ( !__informationKey ) continue;
+                                        
+                                        var __elementTagname = __elementNode.tagName;
+                                        var __elementType    = __elementNode.type;
+                                        
+                                        if ( (typeof __customerInformation[__informationKey] != 'undefined') && (__customerInformation[__informationKey]) ) {
+                                            if ( (__elementTagname == 'INPUT') && ( (!__elementType) || (__elementType == 'text') || (__elementType == 'password') ) ) {
+                                                __elementNode.value = __customerInformation[__informationKey];
+                                            }
+                                            if ( (__elementTagname == 'SELECT') ) {
+                                                for ( var __selectedIndex = 0; __selectedIndex < __elementNode.options.length; __selectedIndex++ ) {
+                                                    if ( __elementNode.options[__selectedIndex].value == __customerInformation[__informationKey] ) {
+                                                        __elementNode.selectedIndex = __selectedIndex;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        billingRegionUpdater.update();
+                        __billingSection.addClassName('allow');
+                        accordion.openSection(__billingSection);
+                        
+                        var __loginSection = $('opc-login');
+                        if ( typeof __loginSection != 'undefined' ) __loginSection.removeClassName('allow');
+                    }
+                }
+                
+                if ( typeof eventData.landing != 'undefined' ) {
+                    delete eventData.landing;
+                }
+                */
+            };
+            
+            __overlapAuthorizationInstance.addHandler(
+                AjaxLogin.Authorization.EVENTTYPE_LOGINSUCCESS,
+                __successLoginHandlerAtCheckout
+            );
+            
+            __overlapAuthorizationInstance.addHandler(
+                AjaxLogin.Authorization.EVENTTYPE_LOGOUTSUCCESS,
+                function(eventData) {
+                    if ( typeof accordion != 'undefined' ) {
+                        var __loginSection = $('opc-login');
+                        if ( typeof __loginSection != 'undefined' ) {
+                            accordion.openSection(__loginSection);
+                        }
+                        else {
+                            window.location.href = window.location.href;
+                        }
+                    }
+                }
+            );
+            
+            var __authorizationNode = $('<?php echo $this->getChild('authorization')->getHtmlId() ?>');
+            var __authorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(__authorizationNode);
+            
+            __authorizationInstance.addHandler(
+                AjaxLogin.Authorization.EVENTTYPE_LOGINSUCCESS,
+                __successLoginHandlerAtCheckout
+            );
+        }
+    );
+</script>

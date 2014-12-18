@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<layout>
+    <default>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><name>ajaxlogin/controls.js</name></action>
+            <action method="addCss"><name>ajaxlogin/controls.css</name></action>
+        </reference>
+    </default>
+    
+    <adminhtml_system_config_edit>
+        <reference name="before_body_end">
+            <block type="core/template" name="option_hint_popup" template="ajaxlogin/optionHintPopup.phtml" />
+        </reference>
+    </adminhtml_system_config_edit>
+</layout>

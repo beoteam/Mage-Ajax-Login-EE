@@ -1,0 +1,31 @@
+<?php if ($this->getParentBlock()->shouldDisplayNewsletterSubscriptionSection()): ?>
+    <?php if ( !Mage::helper('ajaxlogin/data')->isModuleOutputDisabled('Mage_Newsletter') ): ?>
+        <input
+            type="checkbox"
+            name="is_subscribed"
+            title="<?php echo $this->__('Sign Up for Newsletter') ?>"
+            value="1"
+            id="<?php if ( $this->getHtmlId() ): ?><?php echo $this->getHtmlId() ?><?php else: ?><?php echo $this->getNameInLayout() ?><?php endif; ?>"
+            <?php if ( $this->getParentBlock()->getFormData()->getIsSubscribed() ): ?>
+                checked="checked"
+            <?php endif; ?>
+            class="checkbox"
+        />
+        <label for="<?php if ( $this->getHtmlId() ): ?><?php echo $this->getHtmlId() ?><?php else: ?><?php echo $this->getNameInLayout() ?><?php endif; ?>"><?php echo $this->__('Sign Up for Newsletter') ?></label>
+        <?php echo $this->getParentBlock()->getChildHtml('customer.form.register.newsletter')?>
+    <?php endif ?>
+    
+    <?php
+        if ( Mage::helper('ajaxlogin')->isModuleOutputEnabled('AW_Advancednewsletter')) {
+            $__segmentsBlock = $this->getLayout()->createBlock('advancednewsletter/subscribe', 'al_an_subscription');
+            switch ( Mage::getStoreConfig(AW_Advancednewsletter_Block_Subscribe::STYLES_PATH) ) {
+                case 'select': $__segmentsBlock->setTemplate('advancednewsletter/options/select.phtml'); break;
+                case 'multiselect': $__segmentsBlock->setTemplate('advancednewsletter/options/multiselect.phtml'); break;
+                case 'checkboxes': $__segmentsBlock->setTemplate('advancednewsletter/options/checkboxes.phtml'); break;
+                case 'radio': $__segmentsBlock->setTemplate('advancednewsletter/options/radio.phtml'); break;
+            }
+            
+            echo $__segmentsBlock->toHtml();
+        }
+    ?>
+<?php endif ?>

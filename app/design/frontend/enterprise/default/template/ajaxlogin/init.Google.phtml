@@ -1,0 +1,126 @@
+<?php
+/**
+ * aheadWorks Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ *
+ * =================================================================
+ *                 MAGENTO EDITION USAGE NOTICE
+ * =================================================================
+ * This software is designed to work with Magento enterprise edition and
+ * its use on an edition other than specified is prohibited. aheadWorks does not
+ * provide extension support in case of incorrect edition use.
+ * =================================================================
+ *
+ * @category   AW
+ * @package    AW_Ajaxlogin
+ * @version    1.1.3
+ * @copyright  Copyright (c) 2010-2012 aheadWorks Co. (http://www.aheadworks.com)
+ * @license    http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ */
+?><?php if ( Mage::getStoreConfig('ajaxlogin/login_with_google_account/allowed') ): ?>
+    <script type="text/javascript">
+        if ( typeof AjaxLogin == 'undefined' ) {
+            AjaxLogin = {};
+        }
+        
+        AjaxLogin.OAUTH_ACTION_GETAUTHORIZATIONSTATUS   = '<?php echo Mage::helper('ajaxlogin/data')->getUrlSafeForAjax('ajaxlogin/oauth/getAuthorizationStatus') ?>';
+        AjaxLogin.OAUTH_ACTION_CHECKAUTHORIZATIONSTATUS = '<?php echo Mage::helper('ajaxlogin/data')->getUrlSafeForAjax('ajaxlogin/oauth/checkAuthorizationStatus') ?>';
+        
+        if ( typeof AjaxLogin.Google == 'undefined' ) {
+            AjaxLogin.Google = {};
+        }
+        
+        AjaxLogin.Google.auth = function(authorizationInstance) {
+            window.__authWindow = open(
+                AjaxLogin.OAUTH_ACTION_CHECKAUTHORIZATIONSTATUS + '?network=google',
+                'googleAuth',
+                'width=500,height=420,toolbar=no,scrollbars=yes'
+            );
+            
+            window.__authWindowInterval = setInterval(
+                function() {
+                    if ( (typeof window.__authWindow != 'undefined') && (window.__authWindow.closed) ) {
+                        clearInterval(window.__authWindowInterval);
+                        AjaxLogin.Google.getStatus();
+                    }
+                },
+                50
+            );
+        };
+        
+        AjaxLogin.Google.getStatus = function(noTokenCallback, authorizationInstance) {
+            if ( typeof authorizationInstance != 'undefined' ) {
+                authorizationInstance.__scheduleProgressBar();
+            }
+            
+            new Ajax.Request(
+                AjaxLogin.OAUTH_ACTION_GETAUTHORIZATIONSTATUS,
+                {
+                    method     : 'get',
+                    parameters : { network: 'google' },
+                    onSuccess: function(transport) {
+                        try { eval('var __response = ' + transport.responseText + ';'); }
+                        catch (__E) { __response = {}; }
+                        
+                        if ( typeof __response.access_token_accepted != 'undefined' ) {
+                            if ( typeof __response.account_data != 'undefined' ) {
+                                AjaxLogin.Google.login(__response.account_data);
+                            }
+                        }
+                        else {
+                            if ( typeof noTokenCallback == 'function' ) {
+                                noTokenCallback(__response);
+                            }
+                        }
+                        
+                        if ( typeof authorizationInstance != 'undefined' ) {
+                            authorizationInstance.__hideProgressBar();
+                        }
+                    },
+                    onFailure: function() {
+                        if ( typeof authorizationInstance != 'undefined' ) {
+                            authorizationInstance.__hideProgressBar();
+                        }
+                    }
+                }
+            );
+        };
+        
+        AjaxLogin.Google.login = function(googleResponse) {
+            var __overlapAuthorizationNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getChild('authorization')->getHtmlId() ?>');
+            var __overlapAuthorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(__overlapAuthorizationNode);
+            
+            __overlapAuthorizationInstance.getFrame('extra').login(
+                { network: 'google' },
+                function(googleResponse) {
+                    return function(response) {
+                        if ( typeof response == 'object' ) {
+                            if ( (typeof response.notRegistered != 'undefined') && (response.notRegistered == 1) ) {
+                                this.register(
+                                    {
+                                        network     : 'google',
+                                        id          : typeof googleResponse.id != 'undefined' ? googleResponse.id : '',
+                                        email       : typeof googleResponse.email != 'undefined' ? googleResponse.email : '',
+                                        firstname   : typeof googleResponse.given_name != 'undefined' ? googleResponse.given_name : '',
+                                        lastname    : typeof googleResponse.family_name != 'undefined' ? googleResponse.family_name : ''
+                                    }
+                                );
+                            }
+                            if ( (typeof response.errorMessage == 'string') && (response.errorMessage.length) ) {
+                                __authorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(imageNode);
+                                __authorizationInstance.setMessage(response.errorMessage);
+                            }
+                        }
+                    };
+                }
+                (googleResponse)
+            );
+        };
+    </script>
+<?php endif; ?>

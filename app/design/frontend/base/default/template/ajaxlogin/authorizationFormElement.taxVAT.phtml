@@ -1,0 +1,4 @@
+<?php $_taxvat = $this->getLayout()->createBlock('customer/widget_taxvat') ?>
+<?php if ($_taxvat->isEnabled()): ?>
+    <?php echo $_taxvat->setTaxvat($this->getParentBlock()->getFormData()->getTaxvat())->toHtml() ?>
+<?php endif ?>

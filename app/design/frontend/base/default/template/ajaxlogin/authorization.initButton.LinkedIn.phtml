@@ -1,0 +1,7 @@
+<?php if ( Mage::helper('ajaxlogin/adminhtml')->isLinkedinConfigured() ): ?>
+    <script type="text/javascript">
+        var __imageNode = $('<?php echo $this->getNetwork()->getButtonHtmlId() ?>');
+        
+        __imageNode.observe('click', function() { AjaxLogin.LinkedIn.auth(AjaxLogin.Authorization.__getInstanceByChildnode(__imageNode)); });
+    </script>
+<?php endif; ?>

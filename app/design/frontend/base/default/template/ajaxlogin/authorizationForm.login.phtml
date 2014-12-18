@@ -1,0 +1,13 @@
+<div class="al-authorizationform-login">
+    <form action="<?php echo $this->getLoginActionUrl() ?>" method="post" id="login-form">
+        <ul class="form-list">
+            <?php foreach ($this->getChildren() as $__childBlock): ?>
+                <li>
+                    <?php echo $__childBlock->toHtml() ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+        <input type="submit" style="display: none;" />
+    </form>
+    <form action="<?php echo $this->getLogoutActionUrl() ?>" method="get" id="logout-form"></form>
+</div>

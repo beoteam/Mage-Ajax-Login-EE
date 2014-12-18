@@ -1,0 +1,100 @@
+<?php if ( Mage::getStoreConfig('ajaxlogin/login_with_linkedin_account/allowed') ): ?>
+    <script type="text/javascript">
+        if ( typeof AjaxLogin == 'undefined' ) {
+            AjaxLogin = {};
+        }
+        
+        AjaxLogin.OAUTH_ACTION_GETAUTHORIZATIONSTATUS   = '<?php echo Mage::helper('ajaxlogin/data')->getUrlSafeForAjax('ajaxlogin/oauth/getAuthorizationStatus') ?>';
+        AjaxLogin.OAUTH_ACTION_CHECKAUTHORIZATIONSTATUS = '<?php echo Mage::helper('ajaxlogin/data')->getUrlSafeForAjax('ajaxlogin/oauth/checkAuthorizationStatus') ?>';
+        
+        if ( typeof AjaxLogin.LinkedIn == 'undefined' ) {
+            AjaxLogin.LinkedIn = {};
+        }
+        
+        AjaxLogin.LinkedIn.auth = function(authorizationInstance) {
+            window.__authWindow = open(
+                AjaxLogin.OAUTH_ACTION_CHECKAUTHORIZATIONSTATUS + '?network=linkedin',
+                'linkedinAuth',
+                'width=500,height=420,toolbar=no,scrollbars=yes'
+            );
+            
+            window.__authWindowInterval = setInterval(
+                function() {
+                    if ( (typeof window.__authWindow != 'undefined') && (window.__authWindow.closed) ) {
+                        clearInterval(window.__authWindowInterval);
+                        AjaxLogin.LinkedIn.getStatus();
+                    }
+                },
+                50
+            );
+        };
+        
+        AjaxLogin.LinkedIn.getStatus = function(noTokenCallback, authorizationInstance) {
+            if ( typeof authorizationInstance != 'undefined' ) {
+                authorizationInstance.__scheduleProgressBar();
+            }
+            
+            new Ajax.Request(
+                AjaxLogin.OAUTH_ACTION_GETAUTHORIZATIONSTATUS,
+                {
+                    method     : 'get',
+                    parameters : { network: 'linkedin' },
+                    onSuccess: function(transport) {
+                        try { eval('var __response = ' + transport.responseText + ';'); }
+                        catch (__E) { __response = {}; }
+                        
+                        if ( typeof __response.access_token_accepted != 'undefined' ) {
+                            if ( typeof __response.account_data != 'undefined' ) {
+                                AjaxLogin.LinkedIn.login(__response.account_data);
+                            }
+                        }
+                        else {
+                            if ( typeof noTokenCallback == 'function' ) {
+                                noTokenCallback(__response);
+                            }
+                        }
+                        
+                        if ( typeof authorizationInstance != 'undefined' ) {
+                            authorizationInstance.__hideProgressBar();
+                        }
+                    },
+                    onFailure: function() {
+                        if ( typeof authorizationInstance != 'undefined' ) {
+                            authorizationInstance.__hideProgressBar();
+                        }
+                    }
+                }
+            );
+        };
+        
+        AjaxLogin.LinkedIn.login = function(linkedinResponse) {
+            var __overlapAuthorizationNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getChild('authorization')->getHtmlId() ?>');
+            var __overlapAuthorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(__overlapAuthorizationNode);
+            
+            __overlapAuthorizationInstance.getFrame('extra').login(
+                { network: 'linkedin' },
+                function(linkedinResponse) {
+                    return function(response) {
+                        if ( typeof response == 'object' ) {
+                            if ( (typeof response.notRegistered != 'undefined') && (response.notRegistered == 1) ) {
+                                this.register(
+                                    {
+                                        network   : 'linkedin',
+                                        email     : typeof linkedinResponse.emailAddress != 'undefined' ? linkedinResponse.emailAddress : '',
+                                        firstname : typeof linkedinResponse.firstName != 'undefined' ? linkedinResponse.firstName : '',
+                                        lastname  : typeof linkedinResponse.lastName != 'undefined' ? linkedinResponse.lastName : ''
+                                    }
+                                );
+                            }
+                            if ( (typeof response.errorMessage == 'string') && (response.errorMessage.length) ) {
+                                __authorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(imageNode);
+                                __authorizationInstance.setMessage(response.errorMessage);
+                            }
+                        }
+                    };
+                }
+                (linkedinResponse)
+            );
+        };
+    </script>
+<?php endif; ?>

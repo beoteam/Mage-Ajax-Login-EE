@@ -1,0 +1,36 @@
+<?php if ( Mage::helper('ajaxlogin/adminhtml')->isFacebookConfigured() ): ?>
+    <script type="text/javascript">
+        var __imageNode = $('<?php echo $this->getNetwork()->getButtonHtmlId() ?>');
+        __imageNode.observe(
+            'click',
+            function(imageNode) {
+                return function(event) {
+                    FB.getLoginStatus(
+                        function(imageNode) {
+                            return function(response) {
+                                if (response.status === 'connected') {
+                                    __facebookDoAuth(response.authResponse.accessToken, imageNode);
+                                }
+                                else {
+                                    FB.login(
+                                        function (imageNode) {
+                                            return function(response) {
+                                                if (response.status === 'connected') {
+                                                    __facebookDoAuth(imageNode);
+                                                }
+                                            };
+                                        }
+                                        (imageNode),
+                                        { scope: 'email' }
+                                    );
+                                }
+                            };
+                        }
+                        (imageNode)
+                    );
+                };
+            }
+            (__imageNode)
+        );
+    </script>
+<?php endif; ?>

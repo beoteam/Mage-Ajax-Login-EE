@@ -1,0 +1,5 @@
+<?php $customerAttributes = $this->getChild('customer_form_user_attributes');?>
+<?php if ($customerAttributes): ?>
+    <?php $customerAttributes->setShowContainer(false);?>
+    <?php echo $customerAttributes->toHtml()?>
+<?php endif;?>

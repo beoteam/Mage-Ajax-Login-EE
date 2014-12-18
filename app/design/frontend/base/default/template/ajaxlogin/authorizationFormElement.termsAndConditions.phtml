@@ -1,0 +1,68 @@
+<?php if ( $this->getParentBlock()->shouldDisplayTermsAndConditions() ): ?>
+    <?php if ( count($this->getAgreements()) > 0 ): ?>
+        
+        <ol class="checkout-agreements">
+            <?php foreach ($this->getAgreements() as $_a): ?>
+                <li>
+                    <div class="agreement-content" style="<?php echo ($_a->getContentHeight() ? 'height: ' . $_a->getContentHeight() : '')?>; display: none;">
+                        <?php if ($_a->getIsHtml()):?>
+                            <?php echo $_a->getContent() ?>
+                        <?php else:?>
+                            <?php echo nl2br($this->htmlEscape($_a->getContent())) ?>
+                        <?php endif; ?>
+                    </div>
+                    <p class="agree">
+                        <input type="checkbox" id="agreement-<?php echo $_a->getId()?>" name="agreement[<?php echo $_a->getId()?>]" value="1" title="<?php echo $this->htmlEscape($_a->getCheckboxText()) ?>" class="checkbox required-entry" />
+                        <label class="required" for="agreement-<?php echo $_a->getId()?>">
+                            <?php echo $this->__('I accept') ?>&nbsp;<a href=""><?php echo $_a->getIsHtml() ? $_a->getCheckboxText() : $this->htmlEscape($_a->getCheckboxText()) ?></a><em>*</em>
+                        </label>
+                    </p>
+                </li>
+            <?php endforeach ?>
+        </ol>
+        
+        <script type="text/javascript">
+            $$('.al-authorization .agree a').each(
+                function(agreementNode) {
+                    agreementNode.observe(
+                        'click',
+                        function(event) {
+                            var __paragraphNode = this.parentNode.parentNode;
+                            var __candidate = __paragraphNode.previousSibling;
+                            var __contentNode;
+                            
+                            while ( (__candidate) && (__candidate.tagName != 'DIV') ) {
+                                __candidate = __candidate.previousSibling;
+                            }
+                            if ( (__candidate) && (__candidate.tagName == 'DIV') ) {
+                                __contentNode = __candidate;
+                            }
+                            
+                            if ( __contentNode ) {
+                                var __agreementPopupNode = $$('.alAgreementPopup')[0];
+                                var __titleNode = __agreementPopupNode.select('.Title H2')[0];
+                                var __popupContentNode = __agreementPopupNode.select('.Content')[0];
+                                var __acceptButtonNode = __agreementPopupNode.select('.alAcceptButton')[0];
+                                
+                                __titleNode.innerHTML = this.innerHTML;
+                                __popupContentNode.innerHTML = __contentNode.innerHTML;
+                                __acceptButtonNode.__agreementCheckbox = __paragraphNode.select('input')[0];
+                                __agreementPopupNode.style.display = '';
+                                var popupHeight = 600
+                                    - __titleNode.up().getHeight() - __acceptButtonNode.getHeight()
+                                    - parseInt(__titleNode.up().getStyle('paddingBottom'))
+                                    - parseInt(__titleNode.up().getStyle('paddingTop'))
+                                    - parseInt(__popupContentNode.getStyle('paddingBottom'))
+                                    - parseInt(__popupContentNode.getStyle('paddingTop'))
+                                ;
+                                __popupContentNode.setStyle({'height': popupHeight + 'px'});
+                            }
+                            __authorization.__prepareFramePosition();
+                            return AjaxLogin.cancelPrototypeEvent(event);
+                        }
+                    );
+                }
+            );
+        </script>
+    <?php endif; ?>
+<?php endif; ?>

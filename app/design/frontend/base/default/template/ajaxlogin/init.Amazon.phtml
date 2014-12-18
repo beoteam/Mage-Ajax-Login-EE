@@ -1,0 +1,129 @@
+<?php if ( Mage::getStoreConfig('ajaxlogin/login_with_amazon_account/allowed') ): ?>
+    <div id="ajaxlogin-amazon-root"></div>
+    <script type="text/javascript">
+        window.onAmazonLoginReady = function() {
+            amazon.Login.setClientId('<?php echo Mage::getStoreConfig('ajaxlogin/login_with_amazon_account/client_id') ?>');
+        };
+        
+        (
+            function(d) {
+                var a = d.createElement('script');
+                a.type  = 'text/javascript';
+                a.async = true;
+                a.id    = 'amazon-login-sdk';
+                a.src   = 'https://api-cdn.amazon.com/sdk/login1.js?v=3';
+                d.getElementById('ajaxlogin-amazon-root').appendChild(a);
+            }
+        )
+        (document);
+        
+        if ( typeof AjaxLogin == 'undefined' ) {
+            AjaxLogin = {};
+        }
+        
+        AjaxLogin.OAUTH_ACTION_GETAUTHORIZATIONSTATUS   = '<?php echo Mage::helper('ajaxlogin/data')->getUrlSafeForAjax('ajaxlogin/oauth/getAuthorizationStatus') ?>';
+        
+        if ( typeof AjaxLogin.Amazon == 'undefined' ) {
+            AjaxLogin.Amazon = {};
+        }
+        
+        AjaxLogin.Amazon.auth = function(authorizationInstance) {
+            amazon.Login.authorize(
+                { scope : 'profile' },
+                function (amazonResponse) {
+                    var __overlapAuthorizationNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getChild('authorization')->getHtmlId() ?>');
+                    var __overlapAuthorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(__overlapAuthorizationNode);
+                    
+                    __overlapAuthorizationInstance.getFrame('extra').login(
+                        { network: 'amazon', accessToken: amazonResponse.access_token },
+                        function(amazonResponse) {
+                            return function(response) {
+                                if ( typeof response == 'object' ) {
+                                    if ( (typeof response.notRegistered != 'undefined') && (response.notRegistered == 1) ) {
+                                        new Ajax.Request(
+                                            AjaxLogin.OAUTH_ACTION_GETAUTHORIZATIONSTATUS,
+                                            {
+                                                method     : 'get',
+                                                parameters : { network: 'amazon' },
+                                                onSuccess: function(transport) {
+                                                    try { eval('var __response = ' + transport.responseText + ';'); }
+                                                    catch (__E) { __response = {}; }
+                                                    
+                                                    if ( typeof __response.access_token_accepted != 'undefined' ) {
+                                                        if ( typeof __response.account_data != 'undefined' ) {
+                                                            AjaxLogin.Amazon.register(__response.account_data);
+                                                        }
+                                                    }
+                                                    else {
+                                                        if ( typeof noTokenCallback == 'function' ) {
+                                                            noTokenCallback(__response);
+                                                        }
+                                                    }
+                                                    
+                                                    if ( typeof authorizationInstance != 'undefined' ) {
+                                                        authorizationInstance.__hideProgressBar();
+                                                    }
+                                                },
+                                                onFailure: function() {
+                                                    if ( typeof authorizationInstance != 'undefined' ) {
+                                                        authorizationInstance.__hideProgressBar();
+                                                    }
+                                                }
+                                            }
+                                        );
+                                    }
+                                    if ( (typeof response.errorMessage == 'string') && (response.errorMessage.length) ) {
+                                        __authorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(imageNode);
+                                        __authorizationInstance.setMessage(response.errorMessage);
+                                    }
+                                }
+                            };
+                        }
+                        (amazonResponse)
+                    );
+                }
+            );
+        };
+        
+        AjaxLogin.Amazon.register = function(amazonAccountData) {
+            var __overlapAuthorizationNode = $('<?php echo $this->getLayout()->getBlock('authorization_container_overlap')->getChild('authorization')->getHtmlId() ?>');
+            var __overlapAuthorizationInstance = AjaxLogin.Authorization.__getInstanceByChildnode(__overlapAuthorizationNode);
+            
+            var __prefix    = '';
+            var __firstName = '';
+            var __lastName  = '';
+            
+            var __name = typeof amazonAccountData.name != 'undefined' ? amazonAccountData.name : null;
+            if ( __name ) {
+                __name = __name.split(' ');
+                if ( __name.length == 1 ) {
+                    __firstName = __name[0];
+                }
+                if ( __name.length == 2 ) {
+                    __firstName = __name[0];
+                    __lastName  = __name[1];
+                }
+                if ( __name.length >= 3 ) {
+                    if ( __name[0].substr(-1) == '.' ) {
+                        __prefix    = __name[0];
+                        __firstName = __name[1];
+                        __lastName  = __name[2];
+                    }
+                    else {
+                        __firstName = __name[0];
+                        __lastName  = __name[1];
+                    }
+                }
+            }
+            __overlapAuthorizationInstance.getFrame('extra').register(
+                {
+                    network     : 'amazon',
+                    email       : amazonAccountData.email,
+                    prefix      : __prefix,
+                    firstname   : __firstName,
+                    lastname    : __lastName
+                }
+            );
+        };
+    </script>
+<?php endif; ?>

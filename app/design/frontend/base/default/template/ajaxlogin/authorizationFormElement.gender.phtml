@@ -1,0 +1,4 @@
+<?php $_gender = $this->getLayout()->createBlock('customer/widget_gender') ?>
+<?php if ($_gender->isEnabled()): ?>
+    <?php echo $_gender->setGender($this->getParentBlock()->getFormData()->getGender())->toHtml() ?>
+<?php endif ?>

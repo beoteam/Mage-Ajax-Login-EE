@@ -1,0 +1,76 @@
+<?php
+/**
+ * aheadWorks Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ *
+ * =================================================================
+ *                 MAGENTO EDITION USAGE NOTICE
+ * =================================================================
+ * This software is designed to work with Magento enterprise edition and
+ * its use on an edition other than specified is prohibited. aheadWorks does not
+ * provide extension support in case of incorrect edition use.
+ * =================================================================
+ *
+ * @category   AW
+ * @package    AW_Ajaxlogin
+ * @version    1.1.3
+ * @copyright  Copyright (c) 2010-2012 aheadWorks Co. (http://www.aheadworks.com)
+ * @license    http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ */
+?><div class="al-authorization" id="<?php echo $this->getHtmlId() ?>">
+    <div class="Window">
+        <?php foreach ( $this->getChildren() as $__childBlock ): ?>
+            <div class="Frame" style="display: none;">
+                <?php echo $__childBlock->toHtml() ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="alProgressBar alPopup" style="display: none;">
+        <div class="Shadow"></div>
+        <div class="loading-mask">
+            <p class="loader" id="loading_mask_loader"><img src="<?php echo Mage::getDesign()->getSkinUrl('ajaxlogin/ajax-loader-tr.gif') ?>" alt="Loading..." /><br />Please wait...</p>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var __authorization = new AjaxLogin.Authorization($('<?php echo $this->getHtmlId() ?>'));
+    __authorization.addHandler(
+        AjaxLogin.Authorization.EVENTTYPE_SERVERFAILURE,
+        function(eventData) {
+            this.setMessage('There is something wrong with the server. Please, try to login again a bit later.');
+        }
+    );
+    __authorization.addHandler(
+        AjaxLogin.Authorization.EVENTTYPE_JSONFAILURE,
+        function(eventData) {
+            this.setMessage('Bad response from server. Please, try to refresh the page.');
+        }
+    );
+    __authorization.addHandler(
+        [
+            AjaxLogin.Authorization.EVENTTYPE_LOGINFAILURE,
+            AjaxLogin.Authorization.EVENTTYPE_REGISTERFAILURE
+        ],
+        function(eventData) {
+            if ( typeof eventData.errorMessage != 'undefined' ) {
+                this.setMessage(eventData.errorMessage);
+            }
+        }
+    );
+    __authorization.addHandler(
+        AjaxLogin.Authorization.EVENTTYPE_REGISTERSUCCESS,
+        function(eventData) {
+            if ( typeof eventData.successMessage != 'undefined' ) {
+                this.switchToFrame('login');
+                //this.setMessage(eventData.successMessage, 1, 60);
+            }
+        }
+    );
+</script>
